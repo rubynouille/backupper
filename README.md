@@ -1,24 +1,24 @@
 # Backupper
 
-Scripts sécurisés pour sauvegarder vos volumes Docker sur un stockage S3 compatible avec chiffrement GPG.
+Scripts sécurisés pour sauvegarder vos volumes Docker avec Restic.
 
 ## Fonctionnalités
 
-- Backup complet de volumes Docker
-- Chiffrement fort avec GPG
-- Upload vers stockage S3 compatible (Minio, AWS S3, etc.)
+- Backup complet et sécurisé de volumes Docker avec Restic
+- Installation automatique des dépendances
 - Restauration facile
-- Compression (gzip ou zstd en option)
-- Checksums pour vérifier l'intégrité des données
+- Compatible avec différents backends (S3, sftp, local, etc.)
+- Déduplication des données
+- Chiffrement fort
+- Politique de rétention flexible
 - Notifications de succès/échec
 - Automatisation sécurisée via cron/systemd
 
 ## Prérequis
 
+- Un système avec accès sudo ou droits d'installation
 - Docker
-- gpg
-- aws-cli
-- bash
+- Internet pour l'installation des dépendances (si nécessaire)
 
 ## Installation
 
@@ -41,7 +41,10 @@ chmod 600 ~/.backup_env  # IMPORTANT: permissions restreintes
 
 ```bash
 nano ~/.backup_env
-# Modifiez les valeurs selon votre configuration
+# Modifiez les valeurs selon votre configuration, notamment:
+# - RESTIC_PASSWORD 
+# - RESTIC_REPOSITORY (s3:endpoint/bucket/path, sftp:user@host:/path, etc.)
+# - Identifiants du backend si nécessaire (S3, etc.)
 ```
 
 ## Utilisation
@@ -49,13 +52,17 @@ nano ~/.backup_env
 ### Backup manuel
 
 ```bash
-./backup_volumes_gpg_s3.sh
+./backup_volumes.sh
 ```
 
 ### Restauration
 
 ```bash
-./restore_volume_from_s3.sh <nom_volume> <timestamp> <fichier_backup.gpg>
+# Lister les snapshots disponibles
+RESTIC_PASSWORD="votre_mot_de_passe" restic -r "votre_repository" snapshots
+
+# Restaurer un volume depuis un snapshot
+./restore_volume.sh <nom_volume> <snapshot_id>
 ```
 
 ### Automatisation sécurisée
@@ -69,7 +76,7 @@ crontab -e
 2. **Ajoutez la tâche planifiée**
 
 ```
-0 2 * * * /bin/bash -c 'BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes_gpg_s3.sh 2>&1 | logger -t docker-backup'
+0 2 * * * /bin/bash -c 'BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes.sh 2>&1 | logger -t docker-backup'
 ```
 
 3. **Vérifiez les logs**
@@ -81,9 +88,19 @@ grep docker-backup /var/log/syslog
 ## Notes de sécurité
 
 - Le fichier .backup_env doit être protégé (chmod 600)
-- Les dossiers de backup sont automatiquement protégés (chmod 700)
-- L'automatisation est sécurisée si vos variables d'environnement sont correctement protégées
-- Les sauvegardes sont chiffrées avec GPG avant de quitter votre serveur
+- Les dossiers temporaires sont automatiquement protégés (chmod 700)
+- Les sauvegardes sont chiffrées avant de quitter votre serveur
+- Aucun fichier n'est conservé localement (suppression immédiate après backup)
+
+## Backends supportés par Restic
+
+- Local (filesystem)
+- S3 (AWS S3, Minio, tout stockage compatible S3)
+- SFTP (serveur SSH)
+- Rest Server (serveur REST dédié à Restic)
+- Azure Blob Storage
+- Google Cloud Storage
+- Et bien d'autres...
 
 ## Licence
 

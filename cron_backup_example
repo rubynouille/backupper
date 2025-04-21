@@ -3,7 +3,7 @@
 # et ajoutez la ligne ci-dessous
 
 # Backup quotidien à 2h du matin
-0 2 * * * /bin/bash -c 'BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes_gpg_s3.sh 2>&1 | logger -t docker-backup'
+0 2 * * * /bin/bash -c 'BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes.sh 2>&1 | logger -t docker-backup'
 
 # === EXPLICATIONS ===
 # 0 2 * * *                = Exécuter tous les jours à 2h du matin
@@ -19,4 +19,4 @@
 
 # === POUR TESTER ===
 # Pour tester sans attendre le cron, exécutez:
-# BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes_gpg_s3.sh 
+# BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes.sh 

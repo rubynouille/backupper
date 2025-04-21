@@ -1,10 +1,9 @@
 # This file documents the required CLI tools for the backup/restore scripts.
-# Install these using your OS package manager or official sources.
-# Example (Debian/Ubuntu): sudo apt-get install docker.io gnupg awscli zstd
+# Dependencies will be installed automatically if missing.
 
 # Required:
 docker
+restic
+# Optional:
 gpg
-awscli
-# Optional (for zstd compression):
 zstd 
