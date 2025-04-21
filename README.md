@@ -126,7 +126,7 @@ crontab -e
 grep docker-backup /var/log/syslog
 ```
 
-4. Mettre à jour
+## Mettre à jour
 
 Vous serez obligé de mettre à jour en forcant un overwrite des fichiers :
 
