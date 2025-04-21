@@ -1,0 +1,22 @@
+# Exemple de configuration cron pour le backup automatisé
+# Pour l'installer, exécutez: (sudo) crontab -e
+# et ajoutez la ligne ci-dessous
+
+# Backup quotidien à 2h du matin
+0 2 * * * /bin/bash -c 'BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes_gpg_s3.sh 2>&1 | logger -t docker-backup'
+
+# === EXPLICATIONS ===
+# 0 2 * * *                = Exécuter tous les jours à 2h du matin
+# /bin/bash -c '...'       = Exécuter via bash (environnement complet)
+# BACKUP_ENV_FILE="..."    = Définir l'emplacement du fichier d'environnement 
+# 2>&1                     = Rediriger stderr vers stdout
+# | logger -t docker-backup = Envoyer la sortie vers syslog avec le tag 'docker-backup'
+
+# === AVERTISSEMENTS ===
+# 1. Assurez-vous que le fichier ~/.backup_env est correctement configuré et sécurisé (chmod 600)
+# 2. Assurez-vous que l'utilisateur exécutant le cron a accès à Docker (groupe docker ou root)
+# 3. Vérifiez régulièrement les logs: grep docker-backup /var/log/syslog
+
+# === POUR TESTER ===
+# Pour tester sans attendre le cron, exécutez:
+# BACKUP_ENV_FILE="$HOME/.backup_env" /chemin/vers/backup_volumes_gpg_s3.sh 

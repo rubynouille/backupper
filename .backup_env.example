@@ -1,0 +1,33 @@
+#!/bin/bash
+# Exemple de fichier d'environnement pour backup/restore
+# INSTRUCTIONS: 
+# 1. Copiez ce fichier vers ~/.backup_env
+# 2. Modifiez les valeurs ci-dessous avec vos informations
+# 3. Sécurisez le fichier avec: chmod 600 ~/.backup_env
+
+# === PARAMÈTRES OBLIGATOIRES ===
+# Informations GPG (pour chiffrement)
+GPG_RECIPIENT="votre_email@exemple.com"
+
+# Informations AWS/S3
+AWS_ACCESS_KEY_ID="VOTRE_ACCESS_KEY"
+AWS_SECRET_ACCESS_KEY="VOTRE_SECRET_KEY"
+AWS_REGION="us-east-1"
+S3_ENDPOINT="https://s3.exemple.com"
+S3_BUCKET="nom-de-votre-bucket"
+
+# === PARAMÈTRES OPTIONNELS ===
+# Dossier de stockage des backups locaux
+BACKUP_BASE_DIR="/var/backups/docker-volumes"
+
+# Nombre de jours de conservation des backups locaux
+RETENTION_DAYS=7
+
+# Nombre de jobs parallèles pour le backup
+PARALLEL_JOBS=2
+
+# Utiliser la compression zstd (0=non, 1=oui)
+USE_ZSTD=0
+
+# Paramètres de notification (à intégrer dans votre système)
+# WEBHOOK_URL="https://hooks.slack.com/services/XXX/YYY/ZZZ" 

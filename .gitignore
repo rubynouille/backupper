@@ -1,0 +1,11 @@
+# Ignore backup logs and output
+/var/backups/
+*.log
+
+# Ignore temporary restore directories
+/tmp/restore_*
+
+# Ignore editor and OS files
+*.swp
+*.swo
+.DS_Store 
