@@ -11,7 +11,7 @@ Scripts sécurisés pour sauvegarder vos volumes Docker avec Restic.
 - Déduplication des données
 - Chiffrement fort
 - Politique de rétention flexible
-- Notifications de succès/échec
+- Notifications d'échec via webhooks (compatible Discord)
 - Automatisation sécurisée via cron/systemd
 
 ## Prérequis
@@ -45,6 +45,7 @@ nano ~/.backup_env
 # - RESTIC_PASSWORD 
 # - RESTIC_REPOSITORY (s3:endpoint/bucket/path, sftp:user@host:/path, etc.)
 # - Identifiants du backend si nécessaire (S3, etc.)
+# - WEBHOOK_URL (optionnel, pour notifications Discord)
 ```
 
 ## Utilisation
@@ -54,6 +55,20 @@ nano ~/.backup_env
 ```bash
 ./backup_volumes.sh
 ```
+
+### Test des webhooks
+
+Pour tester que vos webhook notifications fonctionnent correctement (notamment pour Discord) :
+
+```bash
+./test_notification.sh
+```
+
+Ce script vérifie :
+- Que votre URL webhook est configurée
+- L'envoi de messages normaux
+- Le comportement en cas de message vide
+- L'envoi de notifications d'erreur
 
 ### Restauration
 

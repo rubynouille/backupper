@@ -130,16 +130,38 @@ exec > >(tee -a "$LOG_FILE") 2>&1
 # Notification function: send a real webhook if WEBHOOK_URL is set
 send_notification() {
   local msg="$1"
-  if [[ -n "$WEBHOOK_URL" ]]; then
-    curl -s -X POST -H 'Content-Type: application/json' \
-      -d "{\"text\":\"$msg\"}" "$WEBHOOK_URL" >/dev/null 2>&1 || \
-      echo "[NOTIFY][ERROR] Failed to send webhook notification"
+  local is_error="${2:-false}"
+  
+  # Only send notifications for errors/failures
+  if [[ "$is_error" != "true" ]]; then
+    echo "[INFO] $msg"
+    return 0
+  fi
+  
+  if [[ -n "${WEBHOOK_URL:-}" ]]; then
+    # Capture webhook response for error logging
+    local response
+    local status_code
+    response=$(curl -s -w "\n%{http_code}" -X POST -H 'Content-Type: application/json' \
+      -d "{\"text\":\"$msg\"}" "$WEBHOOK_URL")
+    status_code=$(echo "$response" | tail -n1)
+    response_body=$(echo "$response" | sed '$d')
+    
+    if [[ "$status_code" != 2* ]]; then
+      echo "[NOTIFY][ERROR] Webhook failed with status $status_code: $response_body" >&2
+      # Check for specific Discord errors
+      if [[ "$response_body" == *"50006"* ]]; then
+        echo "[NOTIFY][ERROR] Discord error: Cannot send an empty message (code 50006)" >&2
+      fi
+      return 1
+    fi
+    echo "[NOTIFY] Sent error notification: $msg"
   else
-    echo "[NOTIFY] $msg"
+    echo "[NOTIFY][ERROR] $msg"
   fi
 }
 
-trap 'send_notification "❌ Backup failed at $TIMESTAMP"' ERR
+trap 'send_notification "❌ Backup failed at $TIMESTAMP" true' ERR
 
 echo "✓ Dependencies OK"
 
@@ -181,5 +203,4 @@ fi
 echo "→ Deleting temporary backup directory..."
 rm -rf "$BACKUP_DIR"
 
-echo "\n✔ Backup completed successfully at $TIMESTAMP"
-send_notification "✅ Backup succeeded at $TIMESTAMP" 
+echo "✔ Backup completed successfully at $TIMESTAMP" 
