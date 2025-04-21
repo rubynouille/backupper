@@ -126,6 +126,16 @@ crontab -e
 grep docker-backup /var/log/syslog
 ```
 
+4. Mettre à jour
+
+Vous serez obligé de mettre à jour en forcant un overwrite des fichiers :
+
+```bash
+git fetch origin
+git reset --hard origin/main
+chmod +x *.sh
+```
+
 ## Notes de sécurité
 
 - Le fichier .backup_env doit être protégé (chmod 600)
