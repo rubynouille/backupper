@@ -142,8 +142,18 @@ send_notification() {
     # Capture webhook response for error logging
     local response
     local status_code
-    response=$(curl -s -w "\n%{http_code}" -X POST -H 'Content-Type: application/json' \
-      -d "{\"text\":\"$msg\"}" "$WEBHOOK_URL")
+    
+    # Check if it's a Discord webhook
+    if [[ "$WEBHOOK_URL" == *"discord.com"* ]]; then
+      # Use Discord webhook format
+      response=$(curl -s -w "\n%{http_code}" -X POST -H 'Content-Type: application/json' \
+        -d "{\"content\":\"$msg\"}" "$WEBHOOK_URL")
+    else
+      # Use generic/Slack webhook format
+      response=$(curl -s -w "\n%{http_code}" -X POST -H 'Content-Type: application/json' \
+        -d "{\"text\":\"$msg\"}" "$WEBHOOK_URL")
+    fi
+    
     status_code=$(echo "$response" | tail -n1)
     response_body=$(echo "$response" | sed '$d')
     

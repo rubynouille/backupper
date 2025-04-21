@@ -48,6 +48,32 @@ nano ~/.backup_env
 # - WEBHOOK_URL (optionnel, pour notifications Discord)
 ```
 
+## Configuration des webhooks
+
+### Discord
+
+Pour configurer les notifications Discord :
+
+1. Dans votre serveur Discord, allez dans Paramètres du serveur > Intégrations > Webhooks
+2. Cliquez sur "Nouveau webhook"
+3. Donnez un nom et choisissez le canal pour les notifications
+4. Copiez l'URL du webhook
+5. Ajoutez-la à votre fichier `.backup_env` :
+   ```
+   WEBHOOK_URL="https://discord.com/api/webhooks/your-webhook-id/your-webhook-token"
+   ```
+
+### Slack
+
+Pour configurer les notifications Slack :
+
+1. Créez une application Slack ou utilisez les webhooks entrants
+2. Obtenez l'URL du webhook
+3. Ajoutez-la à votre fichier `.backup_env` :
+   ```
+   WEBHOOK_URL="https://hooks.slack.com/services/XXX/YYY/ZZZ"
+   ```
+
 ## Utilisation
 
 ### Backup manuel

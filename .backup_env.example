@@ -27,4 +27,7 @@ RETENTION_DAYS=7
 PARALLEL_JOBS=2
 
 # Paramètres de notification (à intégrer dans votre système)
+# Pour Discord:
+# WEBHOOK_URL="https://discord.com/api/webhooks/your-webhook-id/your-webhook-token"
+# Pour Slack:
 # WEBHOOK_URL="https://hooks.slack.com/services/XXX/YYY/ZZZ" 
