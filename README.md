@@ -23,8 +23,8 @@ Scripts sécurisés pour sauvegarder vos volumes Docker sur un stockage S3 compa
 ## Installation
 
 ```bash
-git clone https://github.com/rubynouille/Backupper.git
-cd Backupper
+git clone https://github.com/rubynouille/backupper.git
+cd backupper
 chmod +x *.sh
 ```
 
