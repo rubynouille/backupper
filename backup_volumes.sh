@@ -127,12 +127,16 @@ LOG_FILE="$BACKUP_BASE_DIR/backup_$TIMESTAMP.log"
 # Rediriger stdout/stderr vers fichier et console (never log secrets)
 exec > >(tee -a "$LOG_FILE") 2>&1
 
-# Notification function (à personnaliser si besoin)
+# Notification function: send a real webhook if WEBHOOK_URL is set
 send_notification() {
   local msg="$1"
-  # Example: curl -X POST -H 'Content-Type: application/json' \
-  #   -d "{\"text\":\"$msg\"}" "$WEBHOOK_URL"
-  echo "[NOTIFY] $msg"
+  if [[ -n "$WEBHOOK_URL" ]]; then
+    curl -s -X POST -H 'Content-Type: application/json' \
+      -d "{\"text\":\"$msg\"}" "$WEBHOOK_URL" >/dev/null 2>&1 || \
+      echo "[NOTIFY][ERROR] Failed to send webhook notification"
+  else
+    echo "[NOTIFY] $msg"
+  fi
 }
 
 trap 'send_notification "❌ Backup failed at $TIMESTAMP"' ERR
